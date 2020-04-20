@@ -1,0 +1,22 @@
+{
+  "name": "vbus-access-api",
+  "version": "0.1.0",
+  "description": "The Veea Vbus Access Api.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "universal-cookie": "latest"
+  },
+  "devDependencies": {
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
+  }
+}
