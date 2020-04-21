@@ -7,6 +7,8 @@ export {ApiStorage} from "./storages";
 
 type Subscriber = (token: string) => void;
 
+const HEADER_PREFIX = "Bearer ";
+
 /**
  * Define Api options.
  */
@@ -67,7 +69,7 @@ class AccessApi {
             try {
                 const access = await this.storage.readAccessToken();
                 if (access && access !== "") {
-                    config.headers['Authorization'] = `Bearer ${access}`
+                    config.headers['Authorization'] = `${HEADER_PREFIX}${access}`
                 }
                 return config
             } catch (e) {
@@ -128,7 +130,7 @@ class AccessApi {
                 since there another request that already attempt to
                 refresh the token */
                 this.addSubscriber((access_token: string) => {
-                    errorResponse.config.headers.Authorization = 'JWT ' + access_token;
+                    errorResponse.config.headers.Authorization = HEADER_PREFIX + access_token;
                     resolve(axios(errorResponse.config));
                 });
             });
@@ -145,7 +147,7 @@ class AccessApi {
                     this.isAlreadyFetchingAccessToken = false;
                     this.onAccessTokenFetched(newToken);
                     return retryOriginalRequest;
-                }).catch(async () => {
+                }).catch(async (e) => {
                     this.isAlreadyFetchingAccessToken = false;
                     await this.fireOnUnauthenticated();
                     return Promise.reject(error)
