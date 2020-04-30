@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "The Veea Vbus Access Api.",
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "files": [
-    "dist/index.js",
-    "dist/storage.js"
+    "dist/*.js",
+    "src/*.js"
   ],
   "scripts": {
     "build": "tsc",
