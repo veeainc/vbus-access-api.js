@@ -1,5 +1,3 @@
-
-
 export interface Credentials {
     access: string
     refresh: string
@@ -28,9 +26,22 @@ export interface LoginFinalizePayload {
     code: string
 }
 
+export interface UserInfo {
+    id: string
+    userName: string
+    firstName: string
+    lastName: string
+    identifier: string
+    individualId: string
+    deviceContext: string
+    email: string
+    canChangePassword: boolean
+}
+
 export interface LoginFinalizeResp {
     access: string
     refresh: string
+    user: UserInfo
 }
 
 export interface ModuleInfo {
