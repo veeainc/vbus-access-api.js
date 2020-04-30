@@ -249,9 +249,12 @@ class AccessApi {
         domain: (domain: string) => ({
             name: (name: string) => ({
                 host: (host: string) => ({
-                    get: (path: string) => this.buildGet<object>(`services/${domain}/${name}/${host}/${path}`),
+                    get: this.buildGet<object>(`services/${domain}/${name}/${host}`),
+                    path: (path: string) => ({
+                        get: this.buildGet<object>(`services/${domain}/${name}/${host}/${path}`),
+                        post: this.buildPost<object>(`services/${domain}/${name}/${host}/${path}`),
+                    }),
                     readAttr: (path: string) => this.buildGet<object>(`services/${domain}/${name}/${host}/${path}?action=read`),
-                    post: (path: string) => this.buildPost<object>(`services/${domain}/${name}/${host}/${path}`),
                 })
             })
         })
