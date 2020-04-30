@@ -3,7 +3,6 @@ import * as models from "./models";
 import { ApiStorage } from "./storages";
 import {ModuleInfo} from "./models";
 
-export {ApiStorage} from "./storages";
 
 type Subscriber = (token: string) => void;
 
@@ -102,8 +101,8 @@ class AccessApi {
         try {
             const {response: errorResponse} = error;
 
-            let access = "";
-            let refresh = "";
+            let access: string|null = "";
+            let refresh: string|null = "";
             try {
                 access = await this.storage.readAccessToken();
                 refresh = await this.storage.readRefreshToken();
