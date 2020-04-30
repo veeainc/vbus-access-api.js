@@ -248,6 +248,7 @@ class AccessApi {
         get: this.buildGet<ModuleInfo[]>(`services`),
         domain: (domain: string) => ({
             name: (name: string) => ({
+                get: this.buildGet<object>(`services/${domain}/${name}`),
                 host: (host: string) => ({
                     get: this.buildGet<object>(`services/${domain}/${name}/${host}`),
                     path: (path: string) => ({
