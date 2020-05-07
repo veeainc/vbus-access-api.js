@@ -244,6 +244,8 @@ class AccessApi {
         },
     };
 
+    public logout = this.buildPost(`logout`)
+
     public services = {
         get: this.buildGet<ModuleInfo[]>(`services`),
         domain: (domain: string) => ({
