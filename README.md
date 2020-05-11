@@ -22,6 +22,81 @@ const api = createApi({
 });
 ```
 
+## API Reference
+
+POST /login     
+```typescript
+api.login.post({
+    returnUrl: "my/return/url"
+})
+```
+
+POST /login/finalize
+```typescript
+api.login.finalize.post({
+    code: "code",
+    state: "state",
+})
+```
+
+POST /logout     
+```typescript
+api.logout.post()
+```
+
+
+GET /services
+
+Discover services
+```typescript
+api.services.get()
+```
+
+GET /services/{path}
+
+Read on Vbus
+```typescript
+// Get Vbus elements (tree)
+api.services
+    .domain("system")
+    .name("usbcam")
+    .host("XXXXXX")
+    .get()
+
+// synchronous attribute read
+api.services
+    .domain("system")
+    .name("usbcam")
+    .host("XXXXXX")
+    .path("...")
+    .readAttr()
+```
+
+POST /service/{path}
+
+Write Vbus
+```typescript
+// Call a method
+api.services
+    .domain("system")
+    .name("usbcam")
+    .host("XXXXXX")
+    .path('Connect')
+    .post(["arg1", "arg2"])
+
+// or write an attribte
+api.services
+    .domain("system")
+    .name("usbcam")
+    .host("XXXXXX")
+    .path('Connect')
+    .post(42)
+```
+
+
+
+
+
 ## Example with a minimal React app
 
 App.js

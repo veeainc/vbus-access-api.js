@@ -1,6 +1,6 @@
 import axios, {AxiosInstance, AxiosResponse} from "axios";
 import * as models from "./models";
-import { ApiStorage } from "./storages";
+import {ApiStorage} from "./storages";
 import {ModuleInfo} from "./models";
 
 
@@ -94,15 +94,15 @@ class AccessApi {
     private isNotAuthenticatedError(errorResponse: AxiosResponse): boolean {
         if (!errorResponse) return false;
         const data = errorResponse.data as models.ErrorResponse;
-        return data.code === 1100 ||  data.code === 1101 // ErrorMissingOrInvalidAuthHeader or ErrorInvalidAccessToken
+        return data.code === 1100 || data.code === 1101 // ErrorMissingOrInvalidAuthHeader or ErrorInvalidAccessToken
     }
 
     private async resetTokenAndReattemptRequest(error: any) {
         try {
             const {response: errorResponse} = error;
 
-            let access: string|null = "";
-            let refresh: string|null = "";
+            let access: string | null = "";
+            let refresh: string | null = "";
             try {
                 access = await this.storage.readAccessToken();
                 refresh = await this.storage.readRefreshToken();
@@ -244,7 +244,11 @@ class AccessApi {
         },
     };
 
-    public logout = this.buildPost(`logout`)
+    public logout = {
+        post: () => {
+            return this.axios.post(`logout`, {})
+        }
+    }
 
     public services = {
         get: this.buildGet<ModuleInfo[]>(`services`),
@@ -256,8 +260,8 @@ class AccessApi {
                     path: (path: string) => ({
                         get: this.buildGet<object>(`services/${domain}/${name}/${host}/${path}`),
                         post: this.buildPost<object>(`services/${domain}/${name}/${host}/${path}`),
+                        readAttr: this.buildGet<object>(`services/${domain}/${name}/${host}/${path}?action=read`),
                     }),
-                    readAttr: (path: string) => this.buildGet<object>(`services/${domain}/${name}/${host}/${path}?action=read`),
                 })
             })
         })
