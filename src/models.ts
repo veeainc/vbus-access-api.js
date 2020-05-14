@@ -21,6 +21,14 @@ export interface LoginResp {
     viewUrl: string
 }
 
+export interface LogoutPayload {
+    returnUrl: string
+}
+
+export interface LogoutResp {
+    viewUrl: string
+}
+
 export interface LoginFinalizePayload {
     state: string
     code: string

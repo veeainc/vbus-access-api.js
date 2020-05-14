@@ -245,9 +245,7 @@ class AccessApi {
     };
 
     public logout = {
-        post: () => {
-            return this.axios.post(`logout`, {})
-        }
+        post: this.buildPost<models.LogoutPayload, models.LogoutResp>(`logout`)
     }
 
     public services = {
