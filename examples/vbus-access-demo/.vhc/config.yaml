@@ -1,0 +1,41 @@
+app: vbus-access
+app_info:
+  container: application
+  deployment: single
+  description: vbus access
+  language: golang
+  node_types:
+  - MEN
+  - MN
+  targets:
+  - vhc05
+  - vhx09-10
+  type: app
+  version: 1.0.5
+docker:
+  ports:
+    publish:
+    - 8080:8080
+  volumes:
+    - type: bind
+      source: ./static
+      target: /opt/app/static
+  secure:
+    arg:
+      licenses: []
+      partner_features:
+      - /opt/veea/licenses/00000005/partner-feature1.txt
+      - /opt/veea/licenses/00000005/partner-feature2.txt
+      - /opt/veea/licenses/00000005/partner-feature3.txt
+    label:
+      devices: []
+      features: []
+      unauth_host: true
+      uuid: 00000005-BA5E-5EED-C0DE-000000000109
+      volumes:
+        offers: []
+        persists:
+        - vbus
+        - config
+        requests: []
+version: 2
