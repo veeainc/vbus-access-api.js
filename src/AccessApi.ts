@@ -33,6 +33,12 @@ class AccessApi {
 
     constructor(options: ApiOptions) {
         this.baseUrl = options.baseUrl;
+
+        // ensure trailing slash
+        if (!this.baseUrl.endsWith("/")) {
+            this.baseUrl += "/"
+        }
+
         this.options = options;
         this.storage = options.storage;
 
@@ -137,7 +143,7 @@ class AccessApi {
                 this.isAlreadyFetchingAccessToken = true;
 
                 // use axios without interceptor
-                return axios.post(`${this.baseUrl}/login/refresh`, {
+                return axios.post(`${this.baseUrl}login/refresh`, {
                     refresh: refresh,
                     access: access,
                 }).then(async (resp: AxiosResponse<models.RefreshTokenResp>) => {
