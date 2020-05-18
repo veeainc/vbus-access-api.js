@@ -1,0 +1,266 @@
+import {
+    getPathInObj,
+    hasKey,
+    isWildcardPath,
+    joinPath,
+    NOTIF_ADDED, NOTIF_GET,
+    NOTIF_REMOVED, NOTIF_SETTED,
+    NOTIF_VALUE_GET,
+    NOTIF_VALUE_SETTED
+} from "./helpers";
+import {isAttribute, isMethod, isNode} from "./definitions";
+import {getLogger} from "./logger";
+import {ClientAdapter} from "./adapter";
+
+const log = getLogger();
+
+// Subscription callback type.
+type ProxySubCallback = (proxy: UnknownProxy, segments: string[]) => void
+
+abstract class Proxy {
+    protected readonly client: ClientAdapter = null;
+    protected readonly path: string;
+    protected readonly name: string;
+    protected readonly rawDef: any;
+
+    protected constructor(client: ClientAdapter, path: string, rawDef: any) {
+        this.client = client;
+        this.path = path;
+        this.name = path.split(".").pop();
+        this.rawDef = rawDef;
+    }
+
+    toString(): string {
+        return JSON.stringify(this.rawDef, null, 2);
+    }
+
+    getPath(): string {
+        return this.path
+    }
+
+    getName(): string {
+        return this.name
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Unknown Proxy
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// When we don't know in advance the object type, we use an UnknownProxy.
+// For example, when we subscribe to a path, the library will return an UnknownProxy.
+// Then you will have to assert it to the correct type using IsAttribute, IsMethod...
+export class UnknownProxy extends Proxy {
+    constructor(client: ClientAdapter, path: string, rawDef: object) {
+        super(client, path, rawDef);
+    }
+
+    // Is it an attribute ?
+    isAttribute(): boolean {
+        return isAttribute(this.rawDef)
+    }
+
+    // Transform to an AttributeProxy (use IsAttribute before).
+    asAttribute(): AttributeProxy {
+        return new AttributeProxy(this.client, this.path, this.rawDef)
+    }
+
+    // Is it a method ?
+    isMethod(): boolean {
+        return isMethod(this.rawDef)
+    }
+
+    // Transform to an MethodProxy (use IsMethod before).
+    asMethod(): MethodProxy {
+        return new MethodProxy(this.client, this.path, this.rawDef)
+    }
+
+    // Is it a node ?
+    isNode(): boolean {
+        return isNode(this.rawDef)
+    }
+
+    // Transform to an NodeProxy (use IsMethod before).
+    asNode(): NodeProxy {
+        return new NodeProxy(this.client, this.path, this.rawDef)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Attribute Proxy
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Represents remote node actions.
+export class AttributeProxy extends Proxy {
+    constructor(client: ClientAdapter, path: string, rawDef: object) {
+        super(client, path, rawDef);
+    }
+
+    // get value in cache
+    getValue(): any {
+        if (hasKey(this.rawDef, "value")) {
+            return this.rawDef.value
+        } else {
+            return null
+        }
+    }
+
+    async setValue(value: any) {
+        await this.client.setAttribute(this.getPath(), value)
+    }
+
+    async readValue(): Promise<any> {
+        return await this.client.readAttribute(this.getPath())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Node Proxy
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Represents remote node actions.
+export class NodeProxy extends Proxy {
+    constructor(client: ClientAdapter, path: string, rawDef: object) {
+        super(client, path, rawDef);
+    }
+
+    getTree(): object {
+        return this.rawDef
+    }
+
+    async getNode(...parts: string[]): Promise<NodeProxy> {
+        if (isWildcardPath(...parts)) {
+            throw Error("Wildcard proxy not yet implemented")
+        } else {
+            const rawElementDef = getPathInObj(this.rawDef, ...parts);
+            if (rawElementDef) {
+                return new NodeProxy(this.client, joinPath(this.getPath(), ...parts), rawElementDef)
+            } else { // load from vbus
+                const resp = await this.client.getElement(joinPath(...parts))
+                if (resp) {
+                    if (typeof resp === "object") {
+                        return new NodeProxy(this.client, joinPath(this.getPath(), ...parts), resp)
+                    } else {
+                        return null
+                    }
+                }
+            }
+        }
+    }
+
+    async getMethod(...parts: string[]): Promise<MethodProxy> {
+        if (isWildcardPath(...parts)) {
+            throw Error("Wildcard proxy not yet implemented")
+        } else {
+            const rawElementDef = getPathInObj(this.rawDef, ...parts);
+            if (rawElementDef) {
+                return new MethodProxy(this.client, joinPath(this.getPath(), ...parts), rawElementDef)
+            } else { // load from vbus
+                const resp = await this.client.getElement(joinPath(...parts))
+                if (resp) {
+                    if (typeof resp === "object") {
+                        return new MethodProxy(this.client, joinPath(this.getPath(), ...parts), resp)
+                    } else {
+                        return null
+                    }
+                }
+            }
+        }
+    }
+
+    async getAttribute(...parts: string[]): Promise<AttributeProxy> {
+        if (isWildcardPath(...parts)) {
+            throw Error("Wildcard proxy not yet implemented")
+        } else {
+            const rawElementDef = getPathInObj(this.rawDef, ...parts);
+            if (rawElementDef) {
+                return new AttributeProxy(this.client, joinPath(this.getPath(), ...parts), rawElementDef)
+            } else { // load from vbus
+                const resp = await this.client.getElement(joinPath(...parts))
+                if (resp) {
+                    if (typeof resp === "object") {
+                        return new AttributeProxy(this.client, joinPath(this.getPath(), ...parts), resp)
+                    } else {
+                        return null
+                    }
+                }
+            }
+        }
+    }
+
+    // Retrieve a map of elements in this node.
+    elements(): { [uuid: string]: UnknownProxy } {
+        const elements: {[key: string]: any} = {};
+        for (const uuid of Object.keys(this.rawDef)) {
+            const v = this.rawDef[uuid];
+            if (typeof v === "object") {
+                elements[uuid] = new UnknownProxy(this.client, joinPath(this.getPath(), uuid), v)
+            } else {
+                log.warn("skipping unknown object: %s", JSON.stringify(v))
+            }
+        }
+        return elements
+    }
+
+    // Retrieve a map with only attributes.
+    attributes(): { [uuid: string]: UnknownProxy } {
+        const elements: {[key: string]: any} = {};
+        for (const uuid of Object.keys(this.rawDef)) {
+            const v = this.rawDef[uuid];
+            if (isAttribute(v)) {
+                elements[uuid] = new AttributeProxy(this.client, joinPath(this.getPath(), uuid), v)
+            } else {
+                log.warn("skipping unknown object: %s", JSON.stringify(v))
+            }
+        }
+        return elements
+    }
+
+    // Retrieve a map with only methods.
+    methods(): { [uuid: string]: UnknownProxy } {
+        const elements: {[key: string]: any} = {};
+        for (const uuid of Object.keys(this.rawDef)) {
+            const v = this.rawDef[uuid];
+            if (isMethod(v)) {
+                elements[uuid] = new MethodProxy(this.client, joinPath(this.getPath(), uuid), v)
+            } else {
+                log.warn("skipping unknown object: %s", JSON.stringify(v))
+            }
+        }
+        return elements
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Method Proxy
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Represents remote method actions
+export class MethodProxy extends Proxy {
+    constructor(client: ClientAdapter, path: string, rawDef: object) {
+        super(client, path, rawDef);
+    }
+
+    async call(...args: any[]): Promise<any> {
+        return await this.client.callMethod(this.getPath(), args)
+    }
+
+    async callWithTimeout(timeoutMs: number, ...args: any[]): Promise<any> {
+        return await this.client.callMethodWithTimeout(this.getPath(), timeoutMs, args)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

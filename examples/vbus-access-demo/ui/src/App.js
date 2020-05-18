@@ -5,8 +5,23 @@ import Login from "./pages/Login";
 import createApi, {LocalStorage} from "vbus-access-api";
 import VeeaContext from "./VeeaContext"
 import {useLocation} from "react-router";
-import queryString from "query-string";
+import queryString, {stringify} from "query-string";
+import {Client} from "vbus-access-api/dist/client"
 
+const client = new Client({
+    baseUrl: "http://localhost:8080/api/v1/",
+    storage: new LocalStorage(),
+    onUnauthenticated: (api) => {
+        console.log('onUnauthenticated');
+        return api.login.post({
+            returnUrl: window.location.href
+        }).then(r => {
+            window.location.replace(r.data.viewUrl)
+        }).catch(r => {
+            console.error(r)
+        })
+    }
+});
 
 export default function App() {
     const location = useLocation()
@@ -33,7 +48,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <VeeaContext.Provider value={api}>
+            <VeeaContext.Provider value={client}>
                 {
                     isLogin && <Login/>
                 }

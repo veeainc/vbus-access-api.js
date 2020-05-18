@@ -19,10 +19,10 @@ export interface ApiOptions {
     /**
      * Called when a request fail with an authentication error.
      */
-    onUnauthenticated?: (api: AccessApi) => Promise<void>
+    onUnauthenticated?: (api: Api) => Promise<void>
 }
 
-class AccessApi {
+class Api {
     private axios: AxiosInstance;
     private isAlreadyFetchingAccessToken = false;
     // This is the list of waiting requests that will retry after the JWT refresh complete
@@ -268,6 +268,11 @@ class AccessApi {
                     }),
                 })
             })
+        }),
+        path: (path: string) => ({
+            post: this.buildPost<object>(`services/${path}`),
+            getRead: this.buildGet<object>(`services/${path}?action=read`),
+            get: this.buildGet<object>(`services/${path}`),
         })
     }
 
@@ -289,4 +294,4 @@ class AccessApi {
     }
 }
 
-export default AccessApi
+export default Api

@@ -13,18 +13,19 @@ export default function HomePage() {
     useEffect(() => {
         let timer: NodeJS.Timeout = null
 
-        api.services.get().then(r => {
-            const [module] = r.data.filter(m => m.id === "system.info")
+        api.discoverModules(1).then(r => {
+            const [module] = r.filter(m => m.id === "system.info")
             console.log("module found: ", module)
 
-            timer = setInterval(() => {
-                const [domain, name] = module.id.split(".")
-                api.services.domain(domain).name(name).host(module.hostname).path("status/hour").readAttr().then(r => {
-                    // @ts-ignore
-                    setData(r.data as string)
-                })
-            }, 1000)
-
+            api.getRemoteAttr(module.id, module.hostname, "status", "hour").then(attr => {
+                timer = setInterval(() => {
+                    attr.readValue().then(v => {
+                        setData(v)
+                    })
+                }, 1000)
+            }).catch(e => {
+                console.log("cannot find remote attr")
+            })
         }).catch(r => {
             console.error(r)
         })

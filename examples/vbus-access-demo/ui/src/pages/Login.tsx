@@ -12,10 +12,7 @@ export default function Login() {
     useEffect(() => {
         const values = queryString.parse(location.search);
 
-        api.login.finalize.post({
-            code: values.code as string,
-            state: values.state as string,
-        }).then(r => {
+        api.finalizeLogin(values.state as string, values.code as string).then(r => {
             history.push("/")
         }).catch(r => {
             console.error(r.response)

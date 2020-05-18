@@ -15,7 +15,7 @@
     "react-scripts": "3.4.1",
     "typescript": "^3.8.3",
     "universal-cookie": "^4.0.3",
-    "vbus-access-api": "https://bitbucket.org/vbus/vbus-access-api.js.git"
+    "vbus-access-api": "file:../../.."
   },
   "scripts": {
     "start": "react-scripts start",
