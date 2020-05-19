@@ -1,4 +1,4 @@
-import {Api} from "./index";
+import Api from "./api";
 
 /**
  * A wrapper around AccessApi to adapt from Nats to Rest API.

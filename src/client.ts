@@ -1,7 +1,6 @@
 import {NodeManager} from "./nodes";
 import {ClientAdapter} from "./adapter";
-import {ApiOptions} from "./api";
-import {Api} from "./index";
+import Api, {ApiOptions} from "./api";
 import * as models from "./models"
 
 export class Client extends NodeManager {
