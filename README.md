@@ -1,27 +1,21 @@
-# vbus-access-api
+# vbus-access
 
-
-## Example
-
-Full example available at:
-
-    git clone git@bitbucket.org:boolangery/vbus-access-demo.git
+This is the in-browser Vbus library. It allows to display Vbus element in the frontend.
 
 ## Usage
 
-```typescript
-import createApi, {LocalStorage} from "vbus-access-api";
+First step is to create a client object:
 
-const api = createApi({
+```typescript
+import {LocalStorage, Client} from "@veea/vbus-access";
+
+const client = new Client({
     baseUrl: "http://localhost:8080/api/v1/",
     storage: new LocalStorage(),
-    onUnauthenticated: (api) => {
-        // example: get login url and redirect user to it.
-        // you must setup a page to catch return url and call: api.login.finalize.post
-        return api.login.post({
-            returnUrl: window.location.href + "login"
-        }).then(r => {
-            window.location.replace(r.data.viewUrl)
+    onUnauthenticated: (client) => {
+        const returnUrl = window.location.href;
+        return client.getLoginView(returnUrl).then(r => {
+            window.location.replace(r.viewUrl)
         }).catch(r => {
             console.error(r)
         })
@@ -31,71 +25,70 @@ const api = createApi({
 
 ## API Reference
 
-POST /login     
+### Login
+
+To login, you need to redirect the user to the login screen (external service):
+
 ```typescript
-api.login.post({
-    returnUrl: "my/return/url"
+client.getLoginView("https://return/url").then(r => {
+    window.location.href = r.viewUrl
 })
 ```
 
-POST /login/finalize
+Then catch the `state` and the `code` query param appended on the returnUrl and call:
+
 ```typescript
-api.login.finalize.post({
-    code: "code",
-    state: "state",
+await client.finalizeLogin("state", "code")
+```
+
+### Logout
+
+To logout, you need to redirect the user to the logout screen (external service):
+
+```typescript
+
+client.getLogoutView("https://return/url").then(r => {
+    window.location.href = r.viewUrl
 })
 ```
 
-POST /logout     
+### Retrieving vbus elements
+
+The API is the same as the Python or the Golang library.
+
+You can only read elements, you cannot create Vbus elements.
+
+#### Discover running Vbus modules
+
 ```typescript
-api.logout.post()
+import {ModuleInfo} from "@veea/vbus-access";
+
+const modules: ModuleInfo[] = await client.discoverModules(1)
 ```
 
+#### Discover Vbus element on a specific service
 
-GET /services
-
-Discover services
 ```typescript
-api.services.get()
+import {UnknownProxy} from "@veea/vbus-access";
+
+const element: UnknownProxy = await client.discover("system.info")
 ```
 
-GET /services/{path}
+#### Get remote elements
 
-Read on Vbus
+Attribute:
 ```typescript
-// Get Vbus elements (tree)
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .get()
+import {AttributeProxy} from "@veea/vbus-access";
 
-// synchronous attribute read
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path("...")
-    .readAttr()
+const attr: AttributeProxy = await client.getRemoteAttr("system", "info", "host", "hour")
+const value = await attr.readValue()
 ```
 
-POST /service/{path}
-
-Write Vbus
+Method:
 ```typescript
-// Call a method
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path('Connect')
-    .post(["arg1", "arg2"])
+import {MethodProxy} from "@veea/vbus-access";
 
-// or write an attribte
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path('Connect')
-    .post(42)
+const method: MethodProxy = await client.getRemoteMethod("system", "info", "host", "setHour")
+await method.call(42)
+
 ```

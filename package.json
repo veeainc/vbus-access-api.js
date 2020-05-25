@@ -30,7 +30,10 @@
     "test:src": "jest --config ./scripts/jest/config.src.js",
     "test:umd": "jest --config ./scripts/jest/config.umd.js",
     "test:umdprod": "jest --config ./scripts/jest/config.umdprod.js",
-    "version": "run-s test changelog authors && git add ."
+    "version": "run-s test changelog authors && git add .",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "docz:serve": "docz build && docz serve"
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
@@ -39,6 +42,9 @@
   },
   "peerDependencies": {},
   "devDependencies": {
+    "docz": "latest",
+    "react": "16.8.0",
+    "react-dom": "16.8.0",
     "@babel/core": "7.9.6",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-transform-runtime": "7.9.6",

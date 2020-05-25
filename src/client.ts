@@ -2,10 +2,30 @@ import {NodeManager} from "./nodes";
 import {ClientAdapter} from "./adapter";
 import Api, {ApiOptions} from "./api";
 import * as models from "./models"
+import {ApiStorage} from "./storages";
+
+
+export interface ClientOptions {
+    baseUrl: string
+    storage: ApiStorage
+
+    /**
+     * Called when a request fail with an authentication error.
+     */
+    onUnauthenticated?: (client: Client) => Promise<void>
+}
 
 export class Client extends NodeManager {
-    constructor(apiOptions: ApiOptions) {
-        super(new ClientAdapter(new Api(apiOptions)));
+    constructor(clientOptions: ClientOptions) {
+        super(new ClientAdapter(new Api({
+            baseUrl: clientOptions.baseUrl,
+            storage: clientOptions.storage,
+            onUnauthenticated: api => {
+                if (clientOptions.onUnauthenticated) {
+                    return clientOptions.onUnauthenticated(this)
+                }
+            }
+        })));
     }
 
     /**
