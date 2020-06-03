@@ -8,10 +8,12 @@
   "typings": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "run-s clean compile bundle",
+    "prepare": "npm run build",
     "bundle": "rollup -c",
     "check:format": "prettier --list-different \"**/*.{js,ts,tsx}\"",
     "check:types": "tsc --noEmit",
