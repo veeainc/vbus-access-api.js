@@ -5,6 +5,6 @@
     "allowJs": true,
     "declaration": false,
     "declarationDir": null,
-    "module": "commonjs"
+    "module": "ES2015"
   }
 }

@@ -6,6 +6,8 @@ import sourcemaps from 'rollup-plugin-sourcemaps'
 import { terser } from 'rollup-plugin-terser'
 import json from "rollup-plugin-json"
 import pkg from './package.json'
+import typescript from 'rollup-plugin-typescript2';
+
 
 const CJS_DEV = 'CJS_DEV'
 const CJS_PROD = 'CJS_PROD'
@@ -75,6 +77,12 @@ const getBabelConfig = (bundleType) => {
 }
 
 const getPlugins = (bundleType) => [
+    typescript({
+        typescript: require('typescript'),
+        tsconfigDefaults: { compilerOptions: { declaration: true } },
+        tsconfig: "tsconfig.json",
+        tsconfigOverride: { compilerOptions: { declaration: false } }
+    }),
     nodeResolve(),
     commonjs({
         include: 'node_modules/**',
