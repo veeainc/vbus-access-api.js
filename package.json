@@ -25,17 +25,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx}\"",
     "lint": "eslint --ext js,ts,tsx .",
     "postbundle": "del compiled && cp-cli ./index.js ./dist/index.js",
-    "test": "run-s check:* lint build test:*",
-    "test:cjs": "jest --config ./scripts/jest/config.cjs.js",
-    "test:cjsprod": "cross-env NODE_ENV=production jest --config ./scripts/jest/config.cjs.js",
-    "test:es": "jest --config ./scripts/jest/config.es.js",
-    "test:src": "jest --config ./scripts/jest/config.src.js",
-    "test:umd": "jest --config ./scripts/jest/config.umd.js",
-    "test:umdprod": "jest --config ./scripts/jest/config.umdprod.js",
-    "version": "run-s test changelog authors && git add .",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
-    "docz:serve": "docz build && docz serve"
+    "version": "run-s test changelog authors && git add ."
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
