@@ -98,7 +98,6 @@ const getPlugins = (bundleType) => [
     json(),
     isProduction(bundleType) &&
     terser({
-        sourcemap: true,
         output: { comments: false },
         compress: {
             keep_infinity: true, // eslint-disable-line @typescript-eslint/camelcase
@@ -119,7 +118,6 @@ const getCjsConfig = (bundleType) => ({
             isProduction(bundleType) ? 'production' : 'development'
         }.js`,
         format: 'cjs',
-        sourcemap: true,
     },
     plugins: getPlugins(bundleType),
 })
@@ -131,7 +129,6 @@ const getEsConfig = () => ({
         exports,
         file: pkg.module,
         format: 'es',
-        sourcemap: true,
     },
     plugins: getPlugins(ES),
 })
@@ -151,7 +148,6 @@ const getUmdConfig = (bundleType) => ({
             react: 'React',
         },
         name: 'NProgress',
-        sourcemap: true,
     },
     plugins: getPlugins(bundleType),
 })
