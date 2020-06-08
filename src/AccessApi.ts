@@ -270,6 +270,23 @@ class AccessApi {
             })
         })
     }
+
+    public edges = {
+        get: this.buildGet<ModuleInfo[]>(`edges/services`),
+        domain: (domain: string) => ({
+            name: (name: string) => ({
+                get: this.buildGet<object>(`edges/services/${domain}/${name}`),
+                host: (host: string) => ({
+                    get: this.buildGet<object>(`edges/services/${domain}/${name}/${host}`),
+                    path: (path: string) => ({
+                        get: this.buildGet<object>(`edges/services/${domain}/${name}/${host}/${path}`),
+                        post: this.buildPost<object>(`edges/services/${domain}/${name}/${host}/${path}`),
+                        readAttr: this.buildGet<object>(`edges/services/${domain}/${name}/${host}/${path}?action=read`),
+                    }),
+                })
+            })
+        })
+    }
 }
 
 export default AccessApi
