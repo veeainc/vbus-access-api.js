@@ -255,12 +255,11 @@ class Api {
     public login = {
         post: this.buildPost<models.LoginPayload, models.LoginResp>(`login`),
         finalize: {
-            post: (payload: models.LoginFinalizePayload) => {
-                return this.buildPost<models.LoginFinalizePayload, models.LoginFinalizeResp>(`login/finalize`)(payload).then(async r => {
-                    await this.storage.storeAccessToken(r.data.access);
-                    await this.storage.storeRefreshToken(r.data.refresh);
-                    return r
-                })
+            post: async (payload: models.LoginFinalizePayload): Promise<AxiosResponse<models.LoginFinalizeResp>> => {
+                const r = await this.buildPost<models.LoginFinalizePayload, models.LoginFinalizeResp>(`login/finalize`)(payload);
+                await this.storage.storeAccessToken(r.data.access);
+                await this.storage.storeRefreshToken(r.data.refresh);
+                return r
             },
         },
     };
