@@ -150,6 +150,7 @@ class Api {
                 }).then(async (resp: AxiosResponse<models.RefreshTokenResp>) => {
                     const newToken = resp.data.access;
                     await this.storage.storeAccessToken(newToken);
+                    this.fireStorageUpdatedEvent();
                     this.isAlreadyFetchingAccessToken = false;
                     this.onAccessTokenFetched(newToken);
                     return retryOriginalRequest;
@@ -163,6 +164,14 @@ class Api {
         } catch (err) {
             return Promise.reject(err);
         }
+    }
+
+    /**
+     * Fire a notification to inform that local storage has been updated.
+     */
+    private fireStorageUpdatedEvent() {
+        const event = new Event('vbus-access:storage:updated');
+        document.dispatchEvent(event);
     }
 
     private onAccessTokenFetched(access_token: string) {
@@ -259,6 +268,7 @@ class Api {
                 const r = await this.buildPost<models.LoginFinalizePayload, models.LoginFinalizeResp>(`login/finalize`)(payload);
                 await this.storage.storeAccessToken(r.data.access);
                 await this.storage.storeRefreshToken(r.data.refresh);
+                this.fireStorageUpdatedEvent()
                 return r
             },
         },
