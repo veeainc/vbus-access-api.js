@@ -31,6 +31,7 @@ class Api {
     private readonly baseUrl: string;
     private options: ApiOptions;
     private storage: ApiStorage;
+    private authListeners: (()=>void)[] = []
 
     constructor(options: ApiOptions) {
         this.baseUrl = options.baseUrl;
@@ -166,12 +167,25 @@ class Api {
         }
     }
 
+    public addAuthListener(listener: () => void) {
+        this.authListeners.push(listener);
+    }
+
+    public removeAuthListener(listener: () => void) {
+        const removeIndex = this.authListeners.findIndex(obs => {
+            return listener === obs;
+        });
+
+        if (removeIndex !== -1) {
+            this.authListeners = this.authListeners.slice(removeIndex, 1);
+        }
+    }
+
     /**
      * Fire a notification to inform that local storage has been updated.
      */
     private fireStorageUpdatedEvent() {
-        const event = new Event('vbus-access:storage:updated');
-        window.dispatchEvent(event);
+        this.authListeners.forEach(l => l());
     }
 
     private onAccessTokenFetched(access_token: string) {

@@ -59,4 +59,12 @@ export class Client extends NodeManager {
     async isAuthenticated(): Promise<boolean> {
         return await this.client.getApi().isAuthenticated()
     }
+
+    addAuthListener(listener: () => void) {
+        this.client.getApi().addAuthListener(listener)
+    }
+
+    removeAuthListener(listener: () => void) {
+        this.client.getApi().removeAuthListener(listener)
+    }
 }
