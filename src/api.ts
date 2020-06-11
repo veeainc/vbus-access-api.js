@@ -171,7 +171,7 @@ class Api {
      */
     private fireStorageUpdatedEvent() {
         const event = new Event('vbus-access:storage:updated');
-        document.dispatchEvent(event);
+        window.dispatchEvent(event);
     }
 
     private onAccessTokenFetched(access_token: string) {
