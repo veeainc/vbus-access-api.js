@@ -52,4 +52,11 @@ export class Client extends NodeManager {
         const resp = await this.client.getApi().logout.post({returnUrl: returnUrl})
         return resp.data
     }
+
+    /**
+     * Tells if the client is authenticated.
+     */
+    async isAuthenticated(): Promise<boolean> {
+        return await this.client.getApi().isAuthenticated()
+    }
 }

@@ -2,6 +2,7 @@ import axios, {AxiosInstance, AxiosResponse} from "axios";
 import * as models from "./models";
 import {ApiStorage} from "./storages";
 import {ModuleInfo} from "./models";
+import jwt_decode from 'jwt-decode';
 
 
 type Subscriber = (token: string) => void;
@@ -236,6 +237,20 @@ class Api {
     }
 
     // public api /////////////////////////////////////////////////////////////
+
+    /**
+     * Tells if the user is authenticated.
+     */
+    public async isAuthenticated(): Promise<boolean> {
+        const refreshToken = await this.storage.readRefreshToken()
+
+        if (refreshToken) {
+            const decoded = jwt_decode(refreshToken) as {exp: number};
+            const currentTime = (Date.now().valueOf() / 1000) + 120000; // 120000 is for 2 min offset in ms
+            return (decoded.exp > currentTime)
+        }
+        return false
+    }
 
     public login = {
         post: this.buildPost<models.LoginPayload, models.LoginResp>(`login`),

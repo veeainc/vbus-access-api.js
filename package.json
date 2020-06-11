@@ -30,6 +30,7 @@
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "axios": "^0.19.2",
+    "jwt-decode": "^2.2.0",
     "universal-cookie": "latest"
   },
   "peerDependencies": {},
@@ -37,6 +38,7 @@
     "@babel/core": "^7.10.2",
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
+    "@types/jwt-decode": "^2.2.1",
     "cp-cli": "^2.0.0",
     "cross-env": "^7.0.2",
     "del-cli": "^3.0.1",
