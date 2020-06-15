@@ -198,33 +198,21 @@ class Api {
         this.subscribers.push(callback);
     }
 
-    /**
-     * Build a get request.
-     * @param path
-     * @constructor
-     */
+    // Build a get request.
     private buildGet<T>(path: string): () => Promise<AxiosResponse<T>> {
         return () => {
             return this.axios.get<T>(path)
         }
     }
 
-    /**
-     * Build a delete request.
-     * @param path
-     * @constructor
-     */
+    //Build a delete request.
     private buildDelete(path: string): () => Promise<AxiosResponse> {
         return () => {
             return this.axios.delete(path)
         }
     }
 
-    /**
-     * Build a post request.
-     * @param path
-     * @constructor
-     */
+    // Build a post request.
     private buildPost<T, R = T>(path: string): (body: T) => Promise<AxiosResponse<R>> {
         return (body: T) => {
             return this.axios.post<R>(path, body)
@@ -237,22 +225,14 @@ class Api {
         }
     }
 
-    /**
-     * Build a put request
-     * @param path
-     * @constructor
-     */
+    // Build a put request
     private buildPut<T>(path: string): (body: T) => Promise<AxiosResponse<T>> {
         return (body: T) => {
             return this.axios.put<T>(path, body)
         }
     }
 
-    /**
-     * Build a patch request
-     * @param path
-     * @constructor
-     */
+    // Build a patch request
     private buildPatch<T>(path: string): (body: T) => Promise<AxiosResponse<T>> {
         return (body: T) => {
             return this.axios.patch<T>(path, body)

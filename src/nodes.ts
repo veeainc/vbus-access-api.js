@@ -56,7 +56,10 @@ export class Node extends Element {
 // Node Manager
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// The NodeManager handle high level action like discovering nodes.
+/**
+ * The NodeManager handle high level action like discovering nodes.
+ * @extends Node
+ */
 export class NodeManager extends Node {
     private urisNode: Node = null;
 
@@ -64,10 +67,23 @@ export class NodeManager extends Node {
         super(client, "", new NodeDef({}), null);
     }
 
+    /**
+     * Discover running Vbus modules.
+     * @async
+     * @param timeout {number} FIXME: not used for now.
+     * @return {Promise<ModuleInfo[]>} Discovered modules.
+     */
     async discoverModules(timeout: number): Promise<ModuleInfo[]> {
         return await this.client.discoverModules()
     }
 
+    /**
+     * Discover elements.
+     * @param path {string} Vbus path
+     * @async
+     * @param timeoutMs {number} Timeout in ms
+     * @return {Promise<UnknownProxy>}
+     */
     async discover(path: string, timeoutMs: number): Promise<UnknownProxy> {
         const element = await this.client.discover(path)
         return new UnknownProxy(this.client, path, element)

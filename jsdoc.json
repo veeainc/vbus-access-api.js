@@ -1,0 +1,32 @@
+{
+  "tags": {
+    "allowUnknownTags": [
+      "component",
+      "optional"
+    ]
+  },
+  "plugins": [
+    "node_modules/better-docs/typescript"
+  ],
+  "source": {
+    "includePattern": "./src/.+\\.ts(doc|x)?$",
+    "include": ["."],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "compiled"
+    ]
+  },
+  "templates": {
+    "better-docs": {
+      "name": "React Vbus Access"
+    }
+  },
+  "recurseDepth": 10,
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true,
+    "template": "node_modules/better-docs"
+  }
+}
+

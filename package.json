@@ -25,7 +25,8 @@
     "format": "prettier --write \"**/*.{js,ts,tsx}\"",
     "lint": "eslint --ext js,ts,tsx .",
     "postbundle": "del compiled && cp-cli ./index.js ./dist/index.js",
-    "version": "run-s test changelog authors && git add ."
+    "version": "run-s test changelog authors && git add .",
+    "doc": "jsdoc -c jsdoc.json --readme README.md"
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
@@ -39,10 +40,12 @@
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
     "@types/jwt-decode": "^2.2.1",
+    "better-docs": "^2.0.1",
     "cp-cli": "^2.0.0",
     "cross-env": "^7.0.2",
     "del-cli": "^3.0.1",
     "eslint": "^7.1.0",
+    "jsdoc": "^3.6.4",
     "npm-run-all": "^4.1.5",
     "rollup": "^2.13.1",
     "rollup-plugin-babel": "^4.4.0",
