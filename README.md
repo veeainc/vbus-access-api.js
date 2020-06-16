@@ -1,101 +1,32 @@
-# vbus-access-api
+# vbus-access
 
+This is the in-browser Vbus library. It allows to display Vbus element in the frontend.
 
-## Example
+The API is the same as the Golang and the Python library except you can't create Vbus elements.
 
-Full example available at:
+This is a bridge using Vbus access Rest API.
 
-    git clone git@bitbucket.org:boolangery/vbus-access-demo.git
+To build the jsdoc:
+
+    $ npm i && npm run doc
 
 ## Usage
 
-```typescript
-import createApi, {LocalStorage} from "vbus-access-api";
+First step is to create a client object:
 
-const api = createApi({
+```typescript
+import {LocalStorage, Client} from "@veea/vbus-access";
+
+const client = new Client({
     baseUrl: "http://localhost:8080/api/v1/",
     storage: new LocalStorage(),
-    onUnauthenticated: (api) => {
-        // example: get login url and redirect user to it.
-        // you must setup a page to catch return url and call: api.login.finalize.post
-        return api.login.post({
-            returnUrl: window.location.href + "login"
-        }).then(r => {
-            window.location.replace(r.data.viewUrl)
+    onUnauthenticated: (client) => {
+        const returnUrl = window.location.href;
+        return client.getLoginView(returnUrl).then(r => {
+            window.location.replace(r.viewUrl)
         }).catch(r => {
             console.error(r)
         })
     }
 });
-```
-
-## API Reference
-
-POST /login     
-```typescript
-api.login.post({
-    returnUrl: "my/return/url"
-})
-```
-
-POST /login/finalize
-```typescript
-api.login.finalize.post({
-    code: "code",
-    state: "state",
-})
-```
-
-POST /logout     
-```typescript
-api.logout.post()
-```
-
-
-GET /services
-
-Discover services
-```typescript
-api.services.get()
-```
-
-GET /services/{path}
-
-Read on Vbus
-```typescript
-// Get Vbus elements (tree)
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .get()
-
-// synchronous attribute read
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path("...")
-    .readAttr()
-```
-
-POST /service/{path}
-
-Write Vbus
-```typescript
-// Call a method
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path('Connect')
-    .post(["arg1", "arg2"])
-
-// or write an attribte
-api.services
-    .domain("system")
-    .name("usbcam")
-    .host("XXXXXX")
-    .path('Connect')
-    .post(42)
 ```
