@@ -154,6 +154,16 @@ export interface LoginFinalizeResp {
 }
 
 /**
+ * Contains module status info
+ */
+export interface ModuleStatus {
+    /**
+     * Heap size
+     */
+    heapSize: number
+}
+
+/**
  * Module info.
  */
 export interface ModuleInfo {
@@ -171,4 +181,14 @@ export interface ModuleInfo {
      * Module client type
      */
     client: string
+
+    /**
+     * Whether or not this module has static files to display.
+     */
+    hasStaticFiles: boolean
+
+    /**
+     * Status
+     */
+    status: ModuleStatus
 }
