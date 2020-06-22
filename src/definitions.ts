@@ -52,7 +52,10 @@ export type SetCallback = (data: any, segment: string[]) => void;
 export type RawNode = { [key: string]: any }
 type NodeStruct = { [uuid: string]: Definition }
 
-// A node definition.
+/**
+ * A node definition.
+ * @class NodeDef
+ */
 export class NodeDef extends Definition {
     private readonly structure: NodeStruct = null;
     private readonly onSet: SetCallback = null;

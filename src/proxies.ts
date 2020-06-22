@@ -21,6 +21,7 @@ type ProxySubCallback = (proxy: UnknownProxy, segments: string[]) => void
 
 /**
  * Represents common proxy actions.
+ * @class Proxy
  * @abstract
  */
 abstract class Proxy {
@@ -75,6 +76,7 @@ abstract class Proxy {
  * When we don't know in advance the object type, we use an UnknownProxy.<br/>
  * For example, when we subscribe to a path, the library will return an UnknownProxy.<br/>
  * Then you will have to assert it to the correct type using IsAttribute, IsMethod...
+ * @class UnknownProxy
  * @extends Proxy
  */
 export class UnknownProxy extends Proxy {
@@ -143,6 +145,7 @@ export class UnknownProxy extends Proxy {
 
 /**
  *  Represents remote attribute actions.
+ *  @class AttributeProxy
  *  @extends Proxy
  */
 export class AttributeProxy extends Proxy {
@@ -193,6 +196,7 @@ export class AttributeProxy extends Proxy {
 
 /**
  * Represents remote node actions.
+ * @class NodeProxy
  * @extends Proxy
  */
 export class NodeProxy extends Proxy {
@@ -347,6 +351,7 @@ export class NodeProxy extends Proxy {
 
 /**
  * Represents remote method actions.
+ * @class MethodProxy
  * @extends Proxy
  */
 export class MethodProxy extends Proxy {

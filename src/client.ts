@@ -26,6 +26,7 @@ export interface ClientOptions {
 
 /**
  * The Vbus in-browser client.
+ * @class Client
  * @extends NodeManager
  */
 export class Client extends NodeManager {
