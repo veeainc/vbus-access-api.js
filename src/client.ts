@@ -3,6 +3,7 @@ import {ClientAdapter} from "./adapter";
 import Api, {ApiOptions} from "./api";
 import * as models from "./models"
 import {ApiStorage} from "./storages";
+import {ModuleInfo} from "./models";
 
 /**
  * Represents client options.
@@ -93,6 +94,15 @@ export class Client extends NodeManager {
      */
     async isAuthenticated(): Promise<boolean> {
         return await this.client.getApi().isAuthenticated()
+    }
+
+    /**
+     * Given a module info structure, it builds a static file url.
+     * @param module {ModuleInfo} info retrieved with discoverModules()
+     */
+    getStaticUrlFor(module: ModuleInfo): string {
+        const parts = module.id.split('.')
+        return `http://${this.client.getApi().baseUrl}static/${parts[0]}/${parts[1]}/${module.hostname}/index.html`
     }
 
     addAuthListener(listener: () => void) {

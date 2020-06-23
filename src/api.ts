@@ -24,11 +24,11 @@ export interface ApiOptions {
 }
 
 class Api {
+    public readonly baseUrl: string;
     private axios: AxiosInstance;
     private isAlreadyFetchingAccessToken = false;
     // This is the list of waiting requests that will retry after the JWT refresh complete
     private subscribers: Subscriber[] = [];
-    private readonly baseUrl: string;
     private options: ApiOptions;
     private storage: ApiStorage;
     private authListeners: (()=>void)[] = []
