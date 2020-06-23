@@ -56,7 +56,7 @@ export class Client extends NodeManager {
         // init base url with current iframe location
         const parts = window.location.href.split('/')
         const idx = parts.indexOf("static")
-        this.baseUrl = parts.slice(0, idx + 3).join("/")
+        this.baseUrl = parts.slice(0, idx + 4).join("/")
     }
 
     /**
