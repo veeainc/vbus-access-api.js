@@ -31,6 +31,8 @@ export interface ClientOptions {
  * @extends NodeManager
  */
 export class Client extends NodeManager {
+    public readonly baseUrl: string = ""
+
     /**
      * Creates a new client. <br/>
      * In order to use it, you must follow authentication steps:
@@ -50,6 +52,11 @@ export class Client extends NodeManager {
                 }
             }
         })));
+
+        // init base url with current iframe location
+        const parts = window.location.href.split('/')
+        const idx = parts.indexOf("static")
+        this.baseUrl = parts.slice(0, idx + 3).join("/")
     }
 
     /**
