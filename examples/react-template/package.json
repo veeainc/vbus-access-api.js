@@ -2,11 +2,12 @@
   "name": "react-template",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@veea/vbus-access": "bitbucket:vbus/vbus-access-api.js#v2.0.0",
+    "@veea/vbus-access": "bitbucket:vbus/vbus-access-api.js",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

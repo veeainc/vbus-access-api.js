@@ -1,11 +1,9 @@
 import React from 'react';
 import './App.css';
-import LoginFinalizePage from "./pages/LoginFinalizePage";
 import {BrowserRouter, Route, useHistory} from "react-router-dom";
 import VbusAccessContext from "./VeeaContext"
 
 // pages
-import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import {Client} from "@veea/vbus-access";
 
@@ -18,21 +16,13 @@ function App() {
     const history = useHistory()
 
     const onUnauthenticated = async (client: Client) => {
-        history.push("/login")
+        // ask the user to login into the dashboard
     }
 
     return (
         <div className="App">
             <VbusAccessContext baseUrl={baseUrl} onUnauthenticated={onUnauthenticated}>
-                <Route path="/login-finalize" exact>
-                    <LoginFinalizePage/>
-                </Route>
-
-                <Route path="/login" exact>
-                    <LoginPage/>
-                </Route>
-
-                <Route path="/" exact>
+                <Route path="/">
                     <HomePage/>
                 </Route>
             </VbusAccessContext>
