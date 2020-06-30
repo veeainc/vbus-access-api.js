@@ -1,16 +1,8 @@
-import {
-    getPathInObj,
-    hasKey,
-    isWildcardPath,
-    joinPath,
-    NOTIF_ADDED, NOTIF_GET,
-    NOTIF_REMOVED, NOTIF_SETTED,
-    NOTIF_VALUE_GET,
-    NOTIF_VALUE_SETTED
-} from "./helpers";
+import {getPathInObj, hasKey, isWildcardPath, joinPath} from "./helpers";
 import {isAttribute, isMethod, isNode} from "./definitions";
 import {getLogger} from "./logger";
 import {ClientAdapter} from "./adapter";
+import {JSONSchema7} from 'json-schema'
 
 const log = getLogger();
 
@@ -384,5 +376,21 @@ export class MethodProxy extends Proxy {
      */
     async callWithTimeout(timeoutMs: number, ...args: any[]): Promise<any> {
         return await this.client.callMethodWithTimeout(this.getPath(), timeoutMs, args)
+    }
+
+    /**
+     * Get method parameters Json Schema.
+     * @return {JSONSchema7}
+     */
+    getParamsSchema(): JSONSchema7 {
+        return this.rawDef['params']['schema']
+    }
+
+    /**
+     * Get method returns Json Schema.
+     * @return {JSONSchema7}
+     */
+    getReturnsSchema(): JSONSchema7 {
+        return this.rawDef['returns']['schema']
     }
 }

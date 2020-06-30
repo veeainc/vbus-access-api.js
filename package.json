@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
+    "@types/json-schema": "^7.0.5",
     "axios": "^0.19.2",
     "jwt-decode": "^2.2.0",
     "universal-cookie": "latest"
