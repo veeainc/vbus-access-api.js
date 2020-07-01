@@ -109,7 +109,7 @@ export class Client extends NodeManager {
      */
     getStaticUrlFor(module: ModuleInfo): string {
         const parts = module.id.split('.')
-        return `http://${this.client.getApi().baseUrl}static/${parts[0]}/${parts[1]}/${module.hostname}/index.html`
+        return `${this.client.getApi().baseUrl}static/${parts[0]}/${parts[1]}/${module.hostname}/index.html`
     }
 
     addAuthListener(listener: () => void) {
