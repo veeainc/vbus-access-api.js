@@ -364,7 +364,7 @@ export class MethodProxy extends Proxy {
      * @return {Promise<any>} Return value
      */
     async call(...args: any[]): Promise<any> {
-        return await this.client.callMethod(this.getPath(), args)
+        return await this.client.callMethod(this.getPath(), ...args)
     }
 
     /**
@@ -375,7 +375,7 @@ export class MethodProxy extends Proxy {
      * @return {Promise<any>} Return value
      */
     async callWithTimeout(timeoutMs: number, ...args: any[]): Promise<any> {
-        return await this.client.callMethodWithTimeout(this.getPath(), timeoutMs, args)
+        return await this.client.callMethodWithTimeout(this.getPath(), timeoutMs, ...args)
     }
 
     /**
