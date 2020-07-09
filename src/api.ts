@@ -87,6 +87,13 @@ class Api {
         });
     }
 
+    /**
+     * GEt the storage class.
+     */
+    getStorage(): ApiStorage {
+        return this.storage
+    }
+
     private async fireOnUnauthenticated() {
         if (this.options.onUnauthenticated) {
             await this.options.onUnauthenticated(this);
@@ -145,11 +152,11 @@ class Api {
                 this.isAlreadyFetchingAccessToken = true;
 
                 // use axios without interceptor
-                return axios.post(`${this.baseUrl}login/refresh`, {
+                return axios.post(`${this.baseUrl}auth/refresh`, {
                     refresh: refresh,
                     access: access,
                 }).then(async (resp: AxiosResponse<models.RefreshTokenResp>) => {
-                    const newToken = resp.data.access;
+                    const newToken = resp.data.oauth2Token.access_token;
                     await this.storage.storeAccessToken(newToken);
                     this.fireStorageUpdatedEvent();
                     this.isAlreadyFetchingAccessToken = false;
@@ -256,12 +263,12 @@ class Api {
     }
 
     public login = {
-        post: this.buildPost<models.LoginPayload, models.LoginResp>(`login`),
+        post: this.buildPost<models.LoginPayload, models.LoginResp>(`auth/login`),
         finalize: {
             post: async (payload: models.LoginFinalizePayload): Promise<AxiosResponse<models.LoginFinalizeResp>> => {
-                const r = await this.buildPost<models.LoginFinalizePayload, models.LoginFinalizeResp>(`login/finalize`)(payload);
-                await this.storage.storeAccessToken(r.data.access);
-                await this.storage.storeRefreshToken(r.data.refresh);
+                const r = await this.buildPost<models.LoginFinalizePayload, models.LoginFinalizeResp>(`auth/finalize`)(payload);
+                await this.storage.storeAccessToken(r.data.oauth2Token.access_token);
+                await this.storage.storeRefreshToken(r.data.oauth2Token.refresh_token);
                 this.fireStorageUpdatedEvent()
                 return r
             },

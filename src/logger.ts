@@ -11,7 +11,7 @@ class LoggerAdapter {
     }
 
     debug(format: string, ...args: any[]) {
-        console.debug(format, ...args)
+        console.log(format, ...args)
     }
 }
 

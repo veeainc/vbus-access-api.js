@@ -15,18 +15,35 @@ To build the jsdoc:
 First step is to create a client object:
 
 ```typescript
-import {LocalStorage, Client} from "@veea/vbus-access";
+import {Client, InitResponse} from "@veea/vbus-access";
 
-const client = new Client({
-    baseUrl: "http://localhost:8080/api/v1/",
-    storage: new LocalStorage(),
-    onUnauthenticated: (client) => {
-        const returnUrl = window.location.href;
-        return client.getLoginView(returnUrl).then(r => {
-            window.location.replace(r.viewUrl)
-        }).catch(r => {
-            console.error(r)
-        })
+const client = new Client({baseUrl: "http://localhost:8080/api/v1/"});
+
+// And then you must ensure that `client.init()` is called once:
+client.init().then((r: InitResponse) => {
+    console.log(r.authenticated) // true if authenticated
+    
+    // information is filled if user is authenticated
+    if (r.authenticated) {
+        console.log(r.information.claims.email)
+        console.log(r.information.claims.family_name)
+        console.log(r.information.claims.name)
     }
-});
+}).catch(r => {
+    console.log(r)
+})
 ```
+
+# login
+
+One line login:
+
+```typescript
+client.login().then(() => {
+    console.log("login done")
+}).catch(r => {
+    console.log(r)
+})
+```
+
+It will handle everything for you.

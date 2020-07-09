@@ -23,15 +23,19 @@ export interface ErrorResponse {
  */
 export interface RefreshTokenResp {
     /**
-     * New access token.
+     *
      */
-    access: string
+    oauth2Token: Oauth2Token
 }
 
 /**
  * Login payload.
  */
 export interface LoginPayload {
+    /**
+     * Must be window.origin value
+     */
+    origin: string
     /**
      * Callback url
      */
@@ -43,9 +47,14 @@ export interface LoginPayload {
  */
 export interface LoginResp {
     /**
-     * External view url
+     * Tells if user is already authenticated.
      */
-    viewUrl: string
+    authenticated: boolean
+
+    /**
+     *  If not authenticated, this is the url to redirect the user.
+     */
+    redirect: string
 }
 
 /**
@@ -72,6 +81,11 @@ export interface LogoutResp {
  * Login finalize payload.
  */
 export interface LoginFinalizePayload {
+    /**
+     * Must be window.origin value
+     */
+    origin: string
+
     /**
      * Auth state
      */
@@ -133,24 +147,110 @@ export interface UserInfo {
     canChangePassword: boolean
 }
 
+export interface Oauth2Token {
+    /**
+     *
+     */
+    access_token: string
+    /**
+     *
+     */
+    token_type: string
+    /**
+     *
+     */
+    refresh_token: string
+    /**
+     *
+     */
+    expiry: string
+}
+
+
 /**
  * Finalize login response.
  */
 export interface LoginFinalizeResp {
-    /**
-     * Access token
-     */
-    access: string
+    returnUrl: string
 
     /**
-     * Refresh token
+     *
      */
-    refresh: string
+    oauth2Token: Oauth2Token
 
     /**
-     * User info
+     *
      */
-    user: UserInfo
+    claims: {
+        /**
+         *
+         */
+        exp: number
+        /**
+         *
+         */
+        iat: number
+        /**
+         *
+         */
+        auth_time: number
+        /**
+         *
+         */
+        jti: string
+        /**
+         *
+         */
+        iss: string
+        /**
+         *
+         */
+        aud: string
+        /**
+         *
+         */
+        sub: string
+        /**
+         *
+         */
+        typ: string
+        /**
+         *
+         */
+        azp: string
+        /**
+         *
+         */
+        session_state: string
+        /**
+         *
+         */
+        acr: string
+        /**
+         *
+         */
+        email_verified: boolean,
+        /**
+         *
+         */
+        name: string
+        /**
+         *
+         */
+        preferred_username: string
+        /**
+         *
+         */
+        given_name: string
+        /**
+         *
+         */
+        family_name: string
+        /**
+         *
+         */
+        email: string
+    }
 }
 
 /**

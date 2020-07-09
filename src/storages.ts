@@ -25,6 +25,21 @@ export interface ApiStorage {
      * Store the access token.
      */
     storeRefreshToken(token: string): Promise<void>
+
+    /**
+     * Store js object.
+     */
+    storeObject(key: string, obj: object): Promise<void>
+
+    /**
+     * Read js object.
+     */
+    readObject(key: string): Promise<object | null>
+
+    /**
+     * Remove an item.
+     */
+    removeItem(key: string): Promise<void>
 }
 
 /**
@@ -48,6 +63,20 @@ export class LocalStorage implements ApiStorage {
         localStorage.setItem('refresh', token);
         return Promise.resolve();
     }
+
+    storeObject(key: string, obj: object): Promise<void> {
+        localStorage.setItem(key, JSON.stringify(obj));
+        return Promise.resolve();
+    }
+
+    readObject(key: string): Promise<object | null> {
+        return Promise.resolve(JSON.parse(localStorage.getItem(key)))
+    }
+
+    removeItem(key: string): Promise<void> {
+        localStorage.removeItem(key);
+        return Promise.resolve();
+    }
 }
 
 /**
@@ -69,6 +98,20 @@ export class SessionStorage implements ApiStorage {
 
     storeRefreshToken(token: string): Promise<void> {
         sessionStorage.setItem('refresh', token);
+        return Promise.resolve();
+    }
+
+    storeObject(key: string, obj: object): Promise<void> {
+        sessionStorage.setItem(key, JSON.stringify(obj));
+        return Promise.resolve();
+    }
+
+    readObject(key: string): Promise<object | null> {
+        return Promise.resolve(JSON.parse(sessionStorage.getItem(key)))
+    }
+
+    removeItem(key: string): Promise<void> {
+        sessionStorage.removeItem(key);
         return Promise.resolve();
     }
 }

@@ -5,6 +5,6 @@
     "allowJs": true,
     "declaration": false,
     "declarationDir": null,
-    "module": "ES2015"
+    "module": "esnext"
   }
 }
