@@ -39,8 +39,7 @@ export class ClientAdapter {
     }
 
     async callMethodWithTimeout(path: string, timeout: number, ...args: any[]) {
-        // TODO: add timeout
-        const resp = await this.api.services.path(this.convertPath(path)).post(args)
+        const resp = await this.api.services.path(this.convertPath(path) + `?timeout=${timeout}`).post(args)
         return resp.data
     }
 
